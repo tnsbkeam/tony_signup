@@ -1,0 +1,62 @@
+1-5-2 修改用來操控資料表的類別（class）
+一、我們借用 PHP中第一名框架 Laravel 的幾個動作
+    （https://laravel.tw/docs/5.2/controllers#restful-resource-controllers），
+     讓類別中的成員方法命名一致，這樣比較能夠一眼看出其代表意義，日後要做API也比較符合規範。
+        行為名稱	    實際動作	    範例
+        index	        列表	        Tad_signup_actions::index();
+        create	        新增	        Tad_signup_actions::create();
+        store	        儲存	        $id = Tad_signup_actions::store();
+        show	        顯示一筆	    Tad_signup_actions::show($id);
+        edit	        編輯	        Tad_signup_actions::create($id);
+        update	        更新	        Tad_signup_actions::update($id);
+        destroy	        刪除	        Tad_signup_actions::destroy($id);
+
+二、類別本身放在 class 目錄下
+三、建議以資料表為檔名（首字大寫）的類別檔，如：class/Tad_signup_actions.php
+   1.首先將class\模組物件.php另存為class\模組物件_1.php；以防修改錯誤時可以復原
+   2.將「class\模組物件.php」重新命名為「class\Tony_signup_actions.php」
+   3.開啟class\tony_signup_actions.php
+     ⑴ 在tony_signup_actions.php中尋找「首字大寫模組目錄」；並重新命名為「Tony_signup」
+     ⑵ 在tony_signup_actions.php中尋找「模組物件」；並重新命名為「Tony_signup_actions」
+
+四、在此建議一個資料表就建立一個類別（class）
+五、每個類別（class）都建議設定 namespace（命名空間）設定為 XoopsModules\首字大寫模組目錄; 如：
+    namespace XoopsModules\Tad_signup;
+六、建立class語法，名稱建議用首字大寫的資料表名稱，如：
+    class Tad_signup_actions
+    {
+
+    }
+七、接著把所有「資料表名」取代為真實資料表名稱，如：「tad_signup_actions」
+   1.在tony_signup_actions.php中尋找「資料表名」；並重新命名為「tony_signup_actions」(共有八項逐一更正)
+   2.能改的先改；不能改的等要用時再來改，例如「欄位名」
+   3.每改總是同一張資料表．
+
+八、裡面的成員方法
+   ⑴ public表示任地方都可以呼叫，
+   ⑵ static表示這是一個靜態方法（可以用::呼叫），
+   ⑶ 方法中，若要呼叫同類別（class）中的其他方法，用self::方法()即可。
+    //列出所有資料
+    public static function index()
+    {
+        global $xoopsTpl;
+
+        $all_data = self::get_all();
+        $xoopsTpl->assign('all_data', $all_data);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ⑴⑵⑶⑷⑸⑹⑺⑻⑼⑽
+  ※、「」和「」

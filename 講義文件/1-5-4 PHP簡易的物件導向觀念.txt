@@ -1,0 +1,69 @@
+1-5-4 PHP簡易的物件導向觀念
+一、這是一個名為 box 的類別：
+    class box
+    {
+
+    }
+
+    $box1 = new box();
+    $box2 = new box;
+
+二、用new實例化後， $box1、$box2 就是物件
+   1. 例如:可以建立box.php來試試
+   2. 執行 http://localhost/modules/tony_signup/box.php
+
+
+三、 $color、$size 為公開成員屬性；__construct() 為建構式，實例化時會同時執行；render() 為公開成員方法
+    <?php
+    class box
+    {
+        public $color;
+        public $size = 100;
+
+        public function __construct($size, $color = 'blue')
+        {
+            $this->size = $size;
+            $this->color = $color;
+        }
+
+        public function render()
+        {
+            return "<p style='width: {$this->size}px; height: {$this->size}px; background: {$this->color};'></p>";
+        }
+    }
+
+    $box1 = new box(80, 'red');
+    echo $box1->render();
+
+    $box2 = new box(120);
+    echo $box2->render();
+
+四、在類別內部呼叫成員屬性用 $this->屬性，呼叫成員方法用 $this->方法()
+五、在物件中主要定義成員有三種（可用在成員屬性或成員方法）：
+   1. public（公開成員）：不論在物件本體，或是外部程式，都可以使接使用。
+   2. private（私有成員）：僅在該物件本體可以使用，外部程式或繼承於本物件之子類別無法使用。
+   3. protected（保護成員）：僅外部程式無法叫用，但物件本體及繼承的子類別均可使用。
+六、靜態方法的用法，產出的內容會和之前的一樣
+    <?php
+    class box
+    {
+        public static function mybox($size = 100, $color = 'blue')
+        {
+            return "<p style='width: {$size}px; height: {$size}px; background: {$color};'></p>";
+        }
+    }
+
+    echo box::mybox(80, 'red');
+    echo box::mybox(120);
+
+   執行 http://localhost/modules/tony_signup/box.php 可以看到結果
+
+七、並沒有哪一種方法特別好，而是看使用需求來選擇要用一般的實例化方式，還是用靜態方法。
+八、至於那些繼承、介面...等有的沒的用法，因為暫時用不到，所以等用得到時再來說吧。
+
+
+
+
+一、二、三、四、五、六、七、八、
+  ⑴⑵⑶⑷⑸⑹⑺⑻⑼⑽
+  ※、「」和「」

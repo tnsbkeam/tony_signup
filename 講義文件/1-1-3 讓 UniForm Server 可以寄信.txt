@@ -1,0 +1,41 @@
+1-1-3 讓 UniForm Server 可以寄信
+1. 利用 Gmail 來寄信的設定：
+2. 先Stop Apache，接著點選 General → Mail utility msmtp
+3. 按下左上角的 Edit configuration File 按鈕
+  ⑴ 左上角的General==>Edit configuration File==>按下開啟
+  ⑵ ==>再按下Edit configuration File方框==>會出現記事本打開的msmtprc.ini
+
+4. 將 Gmail 裡面的 from 及 user 修改成您的 Gmail 信箱，password 請設定成該信箱密碼
+   ⑴在msmtprc.ini中尋找A freemail account at Google
+   ⑵將下列內容貼上中的from 你的帳號@gmail.com==>改成你的帳號(例如以前申請的tony340202@gmail.com)
+   ⑶user 你的帳號@gmail.com ==>改成你的帳號(tony340202@gmail.com)
+   ⑷password 你的密碼==>改成的密碼(06-2082850)
+
+    # 3 === from tony340202@gmail.com ============
+        account Gmail
+        tls on
+        port 587
+        tls_certcheck off
+        host smtp.gmail.com
+        from tony340202@gmail.com
+        auth on
+        user tony340202@gmail.com
+        password 06-2082850
+
+5. 最後將 Select Default Account 設為 Gmail 即可
+6. 界面下方表單可以讓您進行信件測試
+7. 也可以重新申請一個Gmail帳號，專門來寄信用
+8. 若是收到 Google 寄來的「針對 xxx@gmail.com 發出的重大安全性警示」，請至Google的帳號管理→安全性，將9. 「低安全性應用程式存取權」開啟，如此才收得到信件。
+  ⑴ 開啟剛才寄信的Google信箱tony340202@gmail.com
+  ⑵ 會看到「已封鎖登入要求」==>「查看活動情形」==>「有印象,是本人要打勾」
+  ⑶回到Google信箱tony340202@gmail.com==>按下「管理您的Google帳號」
+  ⑷選「安全性」==>按下==>找到「低安任性存取權」==>按下「開啟存取權」==>
+  ⑸將「允許低安全性」==>開啟(開關移到開啟)==>會顯示己更新
+  ⑹再寄一次試試是否可以由Localhost來寄信
+    在tony340202@gmail.com可以看到已寄出之信件(UniServer Test)
+
+
+
+
+  ⑴⑵⑶⑷⑸⑹⑺⑻⑼⑽
+  ※、「」和「」

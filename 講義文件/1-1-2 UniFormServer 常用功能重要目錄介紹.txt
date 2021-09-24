@@ -1,0 +1,11 @@
+1-1-2 UniFormServer 常用功能重要目錄介紹
+
+1. 網頁目錄的位置：D:\Tony1102\my_xoops\www
+2. 資料庫的存放位置：D:\Tony1102\my_xoops\core\mysql\data
+3. PHP 設定檔 php.ini 的位置：D:\Tony1102\my_xoops\core\php74\php_production.ini 
+  （隨PHP版本不同，路徑會稍有變化）
+4. MySQL 設定檔 my.ini 的位置：D:\Tony1102\my_xoops\core\mysql\my.ini
+5. MySQL 資料庫密碼的位置：D:\Tony1102\my_xoops\htpasswd\mysql\passwd.txt
+6. 網站連結位置：http://電腦IP 或 http://localhost 或 http://127.0.0.1
+7. 對於 UniForm Server 其他進階功能有興趣的請參考：
+   https://tad.gitbooks.io/ck2_learning/content/uniform_server_zheng_he_si_fu_qi.html

@@ -1,0 +1,87 @@
+1-6-2 前台頁面的基本架構
+ 將「資料表名」取代為tad_signup_actions；「模組物件」取代為Tad_signup_actions
+
+ 要先修改五個地方
+ 1.將/templates/模組目錄_admin.tpl更名為/templates/tony_signup_admin.tpl
+ 2.將/templates/模組目錄_index.tpl更名為/templates/tony_signup_index.tpl
+ 3.將index.php中==>首字大寫模組目錄\模組物件==>更名為Tony_signup\Tony_signup_actions
+   ※注意:$xoTheme->addStylesheet(XOOPS_URL . '/modules/模組目錄/css/module.css');
+     此處模組目錄要小寫tony_signup_actions
+ 4.將index.php中==>模組物件更名為Tony_signup_actions
+ 5.將index.php中==>資料表名更名為tony_signup_actions
+
+一、模組預設首頁，預設可列出所有可以報名的活動，並進行活動報名或管理。
+二、需要用到的類別（class）暫時為 Tad_signup_actions
+    use Xmf\Request;
+    use XoopsModules\Tadtools\Utility;
+    use XoopsModules\Tad_signup\Tad_signup_actions;
+
+三、要使用 Tad_signup_actions 類別，就可以先 use XoopsModules\Tad_signup\Tad_signup_actions; 來簡化語法，
+    不然每次要使用該類就都要寫成 XoopsModules\Tad_signup\Tad_signup_actions::index();
+四、引入檔案區（幾乎是固定用法，順序勿變）
+    require_once __DIR__ . '/header.php';
+    $GLOBALS['xoopsOption']['template_main'] = 'tad_signup_index.tpl';
+    require_once XOOPS_ROOT_PATH . '/header.php';
+
+五、變數過濾（使用 Xmf\Request 類別來過濾）
+    $op = Request::getString('op');
+    $id = Request::getInt('id');
+
+六、執行動作判斷區（類似路由），簡單講，就是判斷$op的值，來決定目前要這個檔執行什麼動作
+   （將「資料表名」取代為tad_signup_actions；「模組物件」取代為Tad_signup_actions）
+    switch ($op) {
+
+        //新增表單
+        case 'tad_signup_actions_create':
+            Tad_signup_actions::create();
+            break;
+
+        //新增資料
+        case 'tad_signup_actions_store':
+            $id = Tad_signup_actions::store();
+            header("location: {$_SERVER['PHP_SELF']}?id=$id");
+            exit;
+
+        //修改用表單
+        case 'tad_signup_actions_edit':
+            Tad_signup_actions::create($id);
+            $op = 'tad_signup_actions_create';
+            break;
+
+        //更新資料
+        case 'tad_signup_actions_update':
+            Tad_signup_actions::update($id);
+            header("location: {$_SERVER['PHP_SELF']}?id=$id");
+            exit;
+
+        //刪除資料
+        case 'tad_signup_actions_destroy':
+            Tad_signup_actions::destroy($id);
+            header("location: {$_SERVER['PHP_SELF']}");
+            exit;
+
+        default:
+            if (empty($id)) {
+                Tad_signup_actions::index();
+                $op = 'tad_signup_actions_index';
+            } else {
+                Tad_signup_actions::show($id);
+                $op = 'tad_signup_actions_show';
+            }
+            break;
+    }
+七、function區：改成新的物件導向寫法後，這裡幾乎用不到了。
+
+八、秀出結果區：
+    unset($_SESSION['api_mode']);
+    $xoopsTpl->assign('toolbar', Utility::toolbar_bootstrap($interface_menu));
+    $xoopsTpl->assign('now_op', $op);
+    $xoTheme->addStylesheet(XOOPS_URL . '/modules/tad_signup/css/module.css');
+    require_once XOOPS_ROOT_PATH . '/footer.php';
+
+
+
+
+一、二、三、四、五、六、七、八、
+  ⑴⑵⑶⑷⑸⑹⑺⑻⑼⑽
+  ※、「」和「」

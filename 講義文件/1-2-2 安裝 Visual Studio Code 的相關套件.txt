@@ -1,0 +1,57 @@
+1-2-2 安裝 Visual Studio Code 的相關套件
+1. Chinese (Traditional) Language Pack for Visual Studio Code：中文介面
+2. phpfmt：格式化PHP程式碼用，請加入設定（php.exe的實際路徑請視實際情況修改）：
+   "phpfmt.php_bin": "C:/my_xoops/core/php74/php.exe",
+
+3. vscode-goto-documentation：快速文件搜尋
+4. AutoFileName : 讓編輯器自動完成圖片或檔案路徑。
+5. Auto Rename Tag : 讓成對的標籤自動一起修改。
+6. Auto Close Tag : 讓標籤自動閉合的。
+7. Bootstrap 4 & Font awesome snippets : 插入Bootstrap 4 或 Font awesome 語法片段。
+    "beautify.language": {        
+        "js": {
+            "type": [
+                "javascript",
+                "json"
+            ],
+            "filename": [
+                ".jshintrc",
+                ".jsbeautifyrc"
+            ]
+            // "ext": ["js", "json"]
+            // ^^ to set extensions to be beautified using the javascript beautifier
+        },
+        "css": [
+            "css",
+            "scss"
+        ],
+        "html": [
+            "htm",
+            "html"
+        ]
+        // ^^ providing just an array sets the VS Code file type
+    },
+    "beautify.config": {
+        "indent_size": 4,
+        "indent_char": " ",
+        "wrap_line_length": 0,
+        "css": {
+            "indent_size": 2
+        }
+    },
+
+8. indent-rainbow：以顏色標出縮排
+9. Material Icon Theme：精美的檔案圖示
+10. PHP IntelliSense：自動提示已定義的class
+    "php.executablePath": "C:/my_xoops/core/php74/php.exe",
+
+11. HTML CSS Support：各種CSS語法提示
+    "css.styleSheets": [
+        "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.css"
+    ],
+    "css.enabledLanguages": [        
+        "css",
+        "scss",
+        "tpl"
+    ],

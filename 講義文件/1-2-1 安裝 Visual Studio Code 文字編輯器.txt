@@ -1,0 +1,55 @@
+1-2-1 安裝 Visual Studio Code 文字編輯器
+1. 官網：https://code.visualstudio.com/
+2. 開發工具，請使用自己慣用的文字編輯器即可，上課用 Visual Studio Code 為主
+3. 建議先安裝：
+   ⑴ node.js https://nodejs.org/en/ ，讓功能更完整（務必安裝 > 6.0 版本）。
+   ⑵ git https://git-scm.com/download/win，VSCode的版本控制才會有作用。
+5. 建議的編輯器設定（php.exe的實際路徑請視實際情況修改）：
+{
+    // 控制字型大小 (以像素為單位)。
+    "editor.fontSize": 18,
+    //  - 'bounded' (當檢視區縮至最小並設定 'editor.wordWrapColumn' 時換行).
+    "editor.wordWrap": "on",
+    // 控制編輯器是否應自動設定貼上的內容格式。格式器必須可供使用，而且格式器應該能夠設定文件中一個範圍的格式。
+    "editor.formatOnPaste": false,
+    // 使用滑鼠滾輪並按住 Ctrl 時，縮放編輯器的字型
+    "editor.mouseWheelZoom": true,
+    // 若啟用，則會在儲存檔案時，修剪檔案末新行尾的所有新行。
+    "files.trimFinalNewlines": true,
+    // 若啟用，將在儲存檔案時修剪尾端空白。
+    "files.trimTrailingWhitespace": true,
+    // 在儲存時設定檔案格式。格式器必須處於可用狀態、檔案不得自動儲存，且編輯器不得關機。
+    "editor.formatOnSave": false,
+    "files.associations": {
+        "*.tpl": "html"
+    },
+    "[php]": {
+        "editor.formatOnSave": true
+    },
+    // 控制是否應在輸入時自動顯示建議
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": true
+    },
+    "editor.minimap.enabled": false,
+    // 指向 PHP 可執行檔。
+    "php.validate.executablePath": "C:/my_xoops/core/php74/php.exe",
+    "editor.tabCompletion": "onlySnippets",
+    // "editor.snippetSuggestions": "top",
+    "editor.linkedEditing": true,
+    "editor.suggestSelection": "first",
+    "git.enableSmartCommit": true,
+    "git.autofetch": true,
+    "git.confirmSync": false,
+}
+
+
+
+
+
+    
+
+
+  ⑴⑵⑶⑷⑸⑹⑺⑻⑼⑽
+  ※、「」和「」

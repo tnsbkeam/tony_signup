@@ -1,0 +1,39 @@
+1-3-1 下載 XOOPS250ModuleConversionFiles
+1. XOOPS250ModuleConversionFiles（物件版） 原本是官方提供的基本模組架構，但下載的版本已經有先經過優化，可支援PHP7及XOOPS 2.5.8以上版本，並加入bootstrap各版本支援，所以，會建議用此版來開發比較容易上手。
+2. 一個XOOPS模組就是一個目錄，此目錄會放在modules底下，請修改目錄名稱，例如：tad_signup。
+  ⑴ 下載前在「下載」位置設定為「下載每個檔案前先詢問儲存位置」
+  ⑵ 下載XOOPS250ModuleConversionFiles（物件版）==>放在「my_xoops/www/modules」目錄下
+  ⑶ 至「my_xoops/www/modules」將下載的「XOOPS250ModuleConversionFiles」按加鍵降壓至此
+  ⑷ 將解壓縮後之目錄(XOOPS250ModuleConversionFiles)名稱改為「tad_signup」
+  ⑸「tony_signup」tad老師在此模組作好後會釋出，不要輕易更換。
+  ⑹ 以後要開啟專案來編輯時，要開啟「tad_signup」資料夾
+
+3. 底下是新的（2.5之後的）XOOPS的模組目錄建議結構（PHP > 5.4）：
+    admin	       	            模組後台目錄
+    blocks	 	                區塊程式目錄
+    class	 	                物件庫或各種前端 js目錄
+    css	 	                    模組樣式目錄
+    docs	 	                說明文件目錄
+    images	 	                圖檔目錄
+                admin	        後台界面用到的圖檔
+                icons	        其他圖檔
+    include	 	                引入檔目錄：如搜尋、模組自動檔
+    language             	    語系目錄
+                english	        英語語系
+                tchinese_utf8	UTF-8中文語系
+    preloads	 	            自動載入物件
+    sql	 	                    資料庫結構目錄：裡面會有 .sql 檔
+    templates	 	            模組樣板目錄：用來放置模組頁面的樣板檔，均為.tpl 檔（或 .html）
+                blocks	        區塊樣板檔：一樣為.tpl 檔（或 .html）
+
+4. 粗體底線的目錄（如果有用到該功能的話）則是一定要有的，而且不能亂改目錄名稱！
+
+5. 粉紅色的目錄，但表常用目錄，但目錄名稱可以隨意改（但其實不建議改）
+
+
+
+
+
+
+  ⑴⑵⑶⑷⑸⑹⑺⑻⑼⑽
+  ※、「」和「」

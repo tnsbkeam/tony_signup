@@ -1,0 +1,37 @@
+1-6-1 前後臺的基本樣板檔
+
+一、所謂基本樣板檔就是把每個樣板檔共同會用到的部份都放在這，只有不一樣的部份才另外做樣板檔，並用 smarty 的
+    includeq 語法來引入
+    ⑴將templates\模組目錄_index.tpl更名為templates\tad_signup_index.tpl
+    ⑵將templates\模組目錄_admin.tpl更名為templates\tad_signup_admin.tpl
+
+
+二、前台基本樣板檔 templates\tad_signup_index.tpl
+    <{$toolbar}>
+    <{if $now_op}>
+        <{includeq file="$xoops_rootpath/modules/$xoops_dirname/templates/op_`$now_op`.tpl"}>
+    <{/if}>
+
+    <script language="JavaScript" type="text/javascript">
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+三、後台基本樣板檔 templates\tad_signup_admin.tpl
+
+    <div class="container-fluid" style="margin-bottom: 30px;">
+        <{if $now_op}>
+            <{includeq file="$xoops_rootpath/modules/$xoops_dirname/templates/op_`$now_op`.tpl"}>
+        <{/if}>
+    </div>
+
+    <script language="JavaScript" type="text/javascript">
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+
+
+一、二、三、四、五、六、七、八、
+  ⑴⑵⑶⑷⑸⑹⑺⑻⑼⑽
+  ※、「」和「」
