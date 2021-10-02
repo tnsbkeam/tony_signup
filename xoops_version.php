@@ -56,8 +56,8 @@ $modversion['hasMain'] = 1;
 // $modversion['onUninstall'] = "include/onUninstall.php";
 
 //---樣板設定---//
-$modversion['templates'][] = ['file' => 'tnsbkeam_signup_admin.tpl', 'description' => '後台共同樣板'];
-$modversion['templates'][] = ['file' => 'tnsbkeam_signup_index.tpl', 'description' => '前台共同樣板'];
+$modversion['templates'][] = ['file' => 'tony_signup_admin.tpl', 'description' => '後台共同樣板'];
+$modversion['templates'][] = ['file' => 'tony_signup_index.tpl', 'description' => '前台共同樣板'];
 
 
 //---搜尋---//
