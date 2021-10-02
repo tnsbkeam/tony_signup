@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <h2 class="my">活動列表</h2>
 <table class="table table-bordered">
     <thead>
@@ -41,3 +42,12 @@
         <a href="index.php?op=tony_signup_actions_create" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i> 新增活動</a>
     </div>
 <{/if}>
+=======
+<h2 class="my">活動列表</h2>
+
+<{if $smarty.session.tony_signup_adm}>
+    <div class="bar">
+        <a href="index.php?op=tony_signup_actions_create" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i> 新增活動</a>
+    </div>
+<{/if}>
+>>>>>>> d55ef2a2d4938ac43a12da9d92fecfc991072909
