@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> bd452d9d869a66b898071933e4e00aa5658e440b
 <h2 class="my">活動列表</h2>
 <table class="table table-bordered">
     <thead>
@@ -16,32 +12,19 @@
     <tbody>
         <{foreach from=$all_data key=id item=action name=all_data}>
             <tr>
-<<<<<<< HEAD
                 <td><a href="index.php?id=<{$action.id}>"><{$action.title}></a></td>
                 <td><{$action.action_date}></td>
-=======
-                <!-- <td><{$action.title}></td> -->
-                <td>
-                    <a href="index.php?id=<{$action.id}>"><{$action.title}></a>
-                </td>
-                <td><{$action.action_date}></td>
-            <!--     <td>
-                    <a href="index.php?id=<{$action.id}>"><{$action.title}></a>
-                </td> -->
->>>>>>> bd452d9d869a66b898071933e4e00aa5658e440b
                 <td><{$action.end_date}></td>
-                <td>0/<{$action.number}></td>
+                <td><{$action.signup|@count}>/<{$action.number}></td>
                 <td>
                     <{if $smarty.session.tony_signup_adm}>
                         <a href="index.php?op=tony_signup_actions_edit&id=<{$action.id}>" class="btn btn-sm btn-warning"><i class="fa fa-pencil" aria-hidden="true"></i> 編輯活動</a>
+                        <a href="index.php?op=tony_signup_actions_copy&id=<{$action.id}>" class="btn btn-sm btn-success"><i class="fa fa-copy" aria-hidden="true"></i> 複製活動</a>
                     <{/if}>
-<<<<<<< HEAD
-                           <!-- &&代表and (有登入而且報名期限尚未過期)-->
-=======
-
->>>>>>> bd452d9d869a66b898071933e4e00aa5658e440b
-                    <{if $xoops_isuser && $action.end_date|strtotime >= $smarty.now}>
-                        <a href="index.php?op=tony_signup_data_create&action_id=<{$action.id}>" class="btn btn-sm btn-info"><i class="fa fa-plus" aria-hidden="true"></i> 立即報名</a>
+                    <{if $action.number > $action.signup|@count && $xoops_isuser && $action.end_date|strtotime >= $smarty.now}>
+                        <a href="index.php?op=tony_signup_data_create&action_id=<{$action.id}>" class="btn btn-info btn-sm"><i class="fa fa-plus" aria-hidden="true"></i> 立即報名</a>
+                    <{else}>
+                        <a href="index.php?id=<{$action.id}>" class="btn btn-success btn-sm"><i class="fa fa-file" aria-hidden="true"></i> 詳情</a>
                     <{/if}>
                 </td>
             </tr>
@@ -54,15 +37,3 @@
         <a href="index.php?op=tony_signup_actions_create" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i> 新增活動</a>
     </div>
 <{/if}>
-<<<<<<< HEAD
-=======
-=======
-<h2 class="my">活動列表</h2>
-
-<{if $smarty.session.tony_signup_adm}>
-    <div class="bar">
-        <a href="index.php?op=tony_signup_actions_create" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i> 新增活動</a>
-    </div>
-<{/if}>
->>>>>>> d55ef2a2d4938ac43a12da9d92fecfc991072909
->>>>>>> bd452d9d869a66b898071933e4e00aa5658e440b

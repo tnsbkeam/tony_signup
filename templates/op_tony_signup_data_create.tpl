@@ -20,12 +20,14 @@
     </small>
 </h3>
 
-<form action="index.php.php" method="post" id="myForm" enctype="multipart/form-data" class="form-horizontal">
-
+<form action="index.php" method="post" id="myForm" enctype="multipart/form-data" class="form-horizontal">
+    <div class="alert alert-success">
+        <{$signup_form}>
+    </div>
     <{$token_form}>
     <input type="hidden" name="op" value="<{$next_op}>">
     <input type="hidden" name="id" value="<{$id}>">
-    <input type="hidden" name="action_id" value="<{$action_id}>">
+    <input type="hidden" name="action_id" value="<{$action.id}>">
     <input type="hidden" name="uid" value="<{$uid}>">
     <div class="bar">
         <button type="submit" class="btn btn-primary">
@@ -33,3 +35,8 @@
         </button>
     </div>
 </form>
+<{if $smarty.session.tony_signup_adm}>
+    <div class="bar">
+        <a href="index.php?op=tony_signup_actions_edit&id=<{$action.id}>" class="btn btn-warning"><i class="fa fa-pencil" aria-hidden="true"></i> 編輯活動</a>
+    </div>
+<{/if}>

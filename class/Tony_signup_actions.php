@@ -8,6 +8,8 @@ use XoopsModules\Tadtools\FormValidator;
 use XoopsModules\Tadtools\Utility;
 use XoopsModules\Tadtools\My97DatePicker;
 use XoopsModules\Tadtools\SweetAlert;
+use XoopsModules\Tony_signup\Tony_signup_data;
+use XoopsModules\Tadtools\BootstrapTable;
 
 class Tony_signup_actions
 {
@@ -102,30 +104,29 @@ class Tony_signup_actions
     //以流水號秀出某筆資料內容
     public static function show($id = '')
     {
-        global $xoopsDB, $xoopsTpl;
+        global $xoopsDB, $xoopsTpl, $xoopsUser;
 
         if (empty($id)) {
             return;
         }
 
         $id = (int) $id;
-        $data = self::get($id);
+        $data = self::get($id, true);
 
-        $myts = \MyTextSanitizer::getInstance();
         foreach ($data as $col_name => $col_val) {
-            $col_val = $myts->htmlSpecialChars($col_val);
-
-            //過濾讀出的變數值 displayTarea($text, $html=0, $smiley=1, $xcode=1, $image=1, $br=1);
-            // $data['大量文字欄'] = $myts->displayTarea($data['大量文字欄'], 0, 1, 0, 1, 1);
-            // $data['HTML文字欄'] = $myts->displayTarea($data['HTML文字欄'], 1, 0, 0, 0, 0);
-
             $xoopsTpl->assign($col_name, $col_val);
-
         }
 
         $SweetAlert = new SweetAlert();
         $SweetAlert->render("del_action", "index.php?op=tony_signup_actions_destroy&id=", 'id');
 
+        $signup = Tony_signup_data::get_all($id, null, true);
+        $xoopsTpl->assign('signup', $signup);
+
+        BootstrapTable::render();
+
+        $uid = $xoopsUser ? $xoopsUser->uid() : 0;
+        $xoopsTpl->assign('uid', $uid);
     }
 
     //更新某一筆資料
@@ -183,7 +184,7 @@ class Tony_signup_actions
     }
 
     //以流水號取得某筆資料
-    public static function get($id = '')
+    public static function get($id = '', $filter = false)
     {
         global $xoopsDB;
 
@@ -195,6 +196,11 @@ class Tony_signup_actions
         where `id` = '{$id}'";
         $result = $xoopsDB->query($sql) or Utility::web_error($sql, __FILE__, __LINE__);
         $data = $xoopsDB->fetchArray($result);
+        if ($filter) {
+            $myts = \MyTextSanitizer::getInstance();
+            $data['detail'] = $myts->displayTarea($data['detail'], 0, 1, 0, 1, 1);
+            $data['title'] = $myts->htmlSpecialChars($data['title']);
+        }
         return $data;
     }
 
@@ -210,10 +216,11 @@ class Tony_signup_actions
         $result = $xoopsDB->query($sql) or Utility::web_error($sql, __FILE__, __LINE__);
         $data_arr = [];
         while ($data = $xoopsDB->fetchArray($result)) {
-
             $data['title'] = $myts->htmlSpecialChars($data['title']);
             $data['detail'] = $myts->displayTarea($data['detail'], 0, 1, 0, 1, 1);
             $data['setup'] = $myts->displayTarea($data['setup'], 0, 1, 0, 1, 1);
+
+            $data['signup'] = Tony_signup_data::get_all($data['id']);
 
             if ($_SESSION['api_mode'] or $auto_key) {
                 $data_arr[] = $data;
@@ -224,25 +231,43 @@ class Tony_signup_actions
         return $data_arr;
     }
 
+   //複製活動資料
+   public static function copy($id)
+   {
+       global $xoopsDB , $xoopsUser;
+       if (!$_SESSION['tony_signup_adm']) {
+        redirect_header($_SERVER['PHP_SELF']."?id=$id", 3, "非管理員，無法執行此動作");
+       }
+      /*  ⑷ 加入擷取下列資料的新信息 */
+       $action = self::get($id);   /* 抓取要複製的活動資料 */
+       $uid = $xoopsUser->uid();       /* 抓目前的管理員 */
+       $end_date = date('Y-m-d 17:30:00', strtotime('+2 weeks'));      /* 變更截止日期 */
+       $action_date = date('Y-m-d 09:00:00', strtotime('+16 days'));   /* 變更活動日期  */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      /*  ⑸ 重寫SQL指令及匯入資料庫 */
+       $sql = "insert into `" . $xoopsDB->prefix("tony_signup_actions") . "` (
+       `title`,
+       `detail`,
+       `action_date`,
+       `end_date`,
+       `number`,
+       `setup`,
+       `uid`  ,
+       `enable`
+       ) values(
+        '{$action['title']}_copy',
+        '{$action['detail']}',
+        '{$action_date}',
+        '{$end_date}',
+        '{$action['number']}',
+        '{$action['setup']}',
+        '{$uid}',
+        '0'
+        )";
+        $xoopsDB->queryF($sql) or Utility::web_error($sql, __FILE__, __LINE__);
+       //取得最後新增資料的流水編號
+       $id = $xoopsDB->getInsertId();
+       return $id;
+   }
 
 }
