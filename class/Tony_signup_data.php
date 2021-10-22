@@ -4,18 +4,22 @@
 
 namespace XoopsModules\Tony_signup;
 
+use XoopsModules\Tadtools\BootstrapTable;
 use XoopsModules\Tadtools\FormValidator;
 use XoopsModules\Tadtools\Utility;
 use XoopsModules\Tony_signup\Tony_signup_actions;
+use XoopsModules\Tadtools\TadDataCenter;
+use XoopsModules\Tadtools\SweetAlert;
+
 
 class Tony_signup_data
 {
     //列出所有報名資料
-    public static function index()
+    public static function index($action_id)
     {
         global $xoopsTpl;
 
-        $all_data = self::get_all();
+        $all_data = self::get_all($action_id);
         $xoopsTpl->assign('all_data', $all_data);
     }
 
@@ -24,8 +28,9 @@ class Tony_signup_data
     {
         global $xoopsTpl, $xoopsUser;
 
-        //抓取預設值
-        $db_values = empty($id) ? [] : self::get($id);
+        $uid = $xoopsUser ? $xoopsUser->uid() : 0;
+             //抓取預設值
+        $db_values = empty($id) ? [] : self::get($id, $uid);
 
         foreach ($db_values as $col_name => $col_val) {
             $$col_name = $col_val;
@@ -45,32 +50,33 @@ class Tony_signup_data
         $token_form = $token->render();
         $xoopsTpl->assign("token_form", $token_form);
         //加入action_id的資料
-        $action = Tony_signup_actions::get($action_id);
+        $action = Tony_signup_actions::get($action_id, true);
 
         if (time() > strtotime($action['end_date'])) {
             redirect_header($_SERVER['PHP_SELF'], 3, "以報名截止，無法再進行報名或修改報名");
+        }elseif (!$action['enable']) {
+            redirect_header($_SERVER['PHP_SELF'], 3, "該報名已關閉，無法再進行報名或修改報名");
+        }elseif (count($action['signup']) >= $action['number']) {
+            redirect_header($_SERVER['PHP_SELF'], 3, "報名人數已滿，無法再進行報名");
         }
 
-        $myts = \MyTextSanitizer::getInstance();
-        foreach ($action as $col_name => $col_val) {
-            //過濾讀出的變數值
-            if ($col_name == 'detail') {
-                $col_val = $myts->displayTarea($col_val, 0, 1, 0, 1, 1);
-            } else {
-                $col_val = $myts->htmlSpecialChars($col_val);
-            }
-            $action[$col_name] = $col_val;
-        }
         $xoopsTpl->assign('action', $action);
         //加入uid的資料
         $uid = $xoopsUser ? $xoopsUser->uid() : 0;
+
         $xoopsTpl->assign('uid', $uid);
+
+        $TadDataCenter = new TadDataCenter('tony_signup');//指定那個模組要使用
+        $TadDataCenter->set_col('id', $id);      //修改時綁定id
+
+        $signup_form = $TadDataCenter->strToForm($action['setup']);
+        $xoopsTpl->assign('signup_form', $signup_form);
     }
 
     //新增報名資料
     public static function store()
     {
-        global $xoopsDB;
+        global $xoopsDB ;
 
         //XOOPS表單安全檢查
         Utility::xoops_security_check();
@@ -81,50 +87,78 @@ class Tony_signup_data
             $$var_name = $myts->addSlashes($var_val);
         }
 
+        $action_id = (int) $action_id;
+        $uid = (int) $uid;
+
         $sql = "insert into `" . $xoopsDB->prefix("tony_signup_data") . "` (
-        `欄位1`,
-        `欄位2`,
-        `欄位3`
-        ) values(
-        '{$欄位1值}',
-        '{$欄位2值}',
-        '{$欄位3值}'
-        )";
-        $xoopsDB->query($sql) or Utility::web_error($sql, __FILE__, __LINE__);
+            `action_id`,
+            `uid`,
+            `signup_date`
+            ) values(
+            '{$action_id}',
+            '{$uid}',
+            now()
+            )";
+
+        $xoopsDB->queryF($sql) or Utility::web_error($sql, __FILE__, __LINE__);
 
         //取得最後新增資料的流水編號
         $id = $xoopsDB->getInsertId();
+
+        $TadDataCenter = new TadDataCenter('tony_signup');
+        $TadDataCenter->set_col('id', $id);   //綁定$id
+        $TadDataCenter->saveData();
+
         return $id;
     }
 
     //以流水號秀出某筆報名資料內容
-    public static function show($id = '')
+    public static function show($id = '', $uid = '')
     {
-        global $xoopsDB, $xoopsTpl;
+        global $xoopsDB, $xoopsTpl, $xoopsUser;
 
         if (empty($id)) {
             return;
         }
 
+        $uid = $_SESSION['can_add']? null : $xoopsUser->uid();
+
         $id = (int) $id;
-        $data = self::get($id);
+        $data = self::get($id , $uid);
+
+        if (empty($data)) {
+            redirect_header($_SERVER['PHP_SELF'], 3, "查無報名無資料，無法觀看");
+        }
 
         $myts = \MyTextSanitizer::getInstance();
         foreach ($data as $col_name => $col_val) {
             $col_val = $myts->htmlSpecialChars($col_val);
 
-            //過濾讀出的變數值 displayTarea($text, $html=0, $smiley=1, $xcode=1, $image=1, $br=1);
-            // $data['大量文字欄'] = $myts->displayTarea($data['大量文字欄'], 0, 1, 0, 1, 1);
-            // $data['HTML文字欄'] = $myts->displayTarea($data['HTML文字欄'], 1, 0, 0, 0, 0);
-
             $xoopsTpl->assign($col_name, $col_val);
+            $$col_name = $col_val;
         }
+       /*  取得陣列資料(參考3-1-5) */
+
+        $TadDataCenter = new TadDataCenter('tony_signup');
+        $TadDataCenter->set_col('id', $id);
+        $tdc = $TadDataCenter->getData();
+       /*  Utility::dd($tdc); */
+        $xoopsTpl->assign('tdc', $tdc);
+        $action = Tony_signup_actions::get($action_id, true);
+        $xoopsTpl->assign('action', $action);
+
+        $now_uid = $xoopsUser ? $xoopsUser->uid() : 0;
+        $xoopsTpl->assign("now_uid", $now_uid);
+
+        $SweetAlert = new SweetAlert();
+        $SweetAlert->render("del_data", "index.php?op=tony_signup_data_destroy&action_id={$action_id}&id=", 'id');
+
     }
 
     //更新某一筆報名資料
     public static function update($id = '')
     {
-        global $xoopsDB;
+        global $xoopsDB , $xoopsUser;
 
         //XOOPS表單安全檢查
         Utility::xoops_security_check();
@@ -135,12 +169,20 @@ class Tony_signup_data
             $$var_name = $myts->addSlashes($var_val);
         }
 
+        $action_id = (int) $action_id;
+        $uid = (int) $uid;
+        $now_uid = $xoopsUser ? $xoopsUser->uid() : 0;
+
         $sql = "update `" . $xoopsDB->prefix("tony_signup_data") . "` set
-        `欄位1` = '{$欄位1值}',
-        `欄位2` = '{$欄位2值}',
-        `欄位3` = '{$欄位3值}'
-        where `id` = '$id'";
-        $xoopsDB->queryF($sql) or Utility::web_error($sql, __FILE__, __LINE__);
+        `signup_date` = now()
+        where `id` = '$id' and `uid` = '$now_uid'";
+        if ($xoopsDB->queryF($sql)) {
+            $TadDataCenter = new TadDataCenter('tony_signup');
+            $TadDataCenter->set_col('id', $id);
+            $TadDataCenter->saveData();
+        } else {
+            Utility::web_error($sql, __FILE__, __LINE__);
+        }
 
         return $id;
     }
@@ -148,18 +190,28 @@ class Tony_signup_data
     //刪除某筆報名資料資料
     public static function destroy($id = '')
     {
-        global $xoopsDB;
+        global $xoopsDB, $xoopsUser;
 
         if (empty($id)) {
             return;
         }
 
+        $now_uid = $xoopsUser ? $xoopsUser->uid() : 0;
+
         $sql = "delete from `" . $xoopsDB->prefix("tony_signup_data") . "`
-        where `id` = '{$id}'";
-        $xoopsDB->queryF($sql) or Utility::web_error($sql, __FILE__, __LINE__);
+        where `id` = '{$id}' and `uid`='$now_uid'";
+        /*加入權限判斷後再刪除如下(參考3-5-1 刪除資料方法) */
+        if ($xoopsDB->queryF($sql)) {
+            $TadDataCenter = new TadDataCenter('tony_signup');
+            $TadDataCenter->set_col('id', $id);
+            $TadDataCenter->delData();
+        } else {
+            Utility::web_error($sql, __FILE__, __LINE__);
+        }
+
     }
 
-    //以流水號取得某筆報名資料
+      //以流水號取得某筆報名資料
     public static function get($id = '')
     {
         global $xoopsDB;
@@ -176,21 +228,27 @@ class Tony_signup_data
     }
 
     //取得所有報名資料陣列
-    public static function get_all($auto_key = false)
+    public static function get_all($action_id = '', $uid = '' , $auto_key = false)
     {
-        global $xoopsDB;
+        global $xoopsDB, $xoopsUser;
         $myts = \MyTextSanitizer::getInstance();
 
-        $sql = "select * from `" . $xoopsDB->prefix("tony_signup_data") . "` where 1 ";
+        if ($action_id) {
+            $sql = "select * from `" . $xoopsDB->prefix("tony_signup_data") . "` where `action_id`='$action_id' order by `signup_date`";
+        } else {
+            /* 假如使用者不是管理員而且不指定要擷取那個uid的資料 */
+            if (!$_SESSION['can_add'] or !$uid) {
+                $uid = $xoopsUser ? $xoopsUser->uid() : 0;
+            }
+            $sql = "select * from `" . $xoopsDB->prefix("tony_signup_data") . "` where `uid`='$uid' order by `signup_date`";
+        }
         $result = $xoopsDB->query($sql) or Utility::web_error($sql, __FILE__, __LINE__);
         $data_arr = [];
+        $TadDataCenter = new TadDataCenter('tony_signup');
         while ($data = $xoopsDB->fetchArray($result)) {
-
-            // $data['文字欄'] = $myts->htmlSpecialChars($data['文字欄']);
-            // $data['大量文字欄'] = $myts->displayTarea($data['大量文字欄'], 0, 1, 0, 1, 1);
-            // $data['HTML文字欄'] = $myts->displayTarea($data['HTML文字欄'], 1, 0, 0, 0, 0);
-            // $data['數字欄'] = (int) $data['數字欄'];
-
+            $TadDataCenter->set_col('id',$data['id']);
+            $data['tdc'] = $TadDataCenter->getData();
+            $data['action'] = Tony_signup_actions::get($data['action_id'], true);
             if ($_SESSION['api_mode'] or $auto_key) {
                 $data_arr[] = $data;
             } else {
@@ -198,6 +256,170 @@ class Tony_signup_data
             }
         }
         return $data_arr;
+    }
+
+    //查詢某人的報名記錄
+    public static function my($uid){
+        global $xoopsTpl, $xoopsUser;
+
+        $my_signup = self::get_all(null, $uid);
+        $xoopsTpl->assign('my_signup', $my_signup);
+
+        BootstrapTable::render();
+
+     }
+
+     // 更改錄取狀態(借用有update的函數來修改)
+     public static function accept($id, $accept)
+     {
+        global $xoopsDB;
+
+        if (!$_SESSION['can_add']) {
+            redirect_header($_SERVER['PHP_SELF'], 3, "您沒有權限使用此功能");
+        }
+        /*  再次數字化  */
+        $id = (int) $id;
+        $accept = (int) $accept;
+
+        $sql = "update `" . $xoopsDB->prefix("tony_signup_data") . "` set `accept` = '$accept'
+        where `id` = '$id'";
+        $xoopsDB->queryF($sql) or Utility::web_error($sql, __FILE__, __LINE__);
+     }
+
+     //立即寄出
+     public static function send($title = "無標題", $content = "無內容", $email = "")
+     {
+         global $xoopsUser;
+         if (empty($email)) {
+             $email = $xoopsUser->email();
+         }
+         $xoopsMailer = xoops_getMailer();
+         $xoopsMailer->multimailer->ContentType = "text/html";
+         $xoopsMailer->addHeaders("MIME-Version: 1.0");
+         $header = '';
+         return $xoopsMailer->sendMail($email, $title, $content, $header);
+     }
+
+    //產生寄信通知
+    public static function mail($id, $type, $signup = [])
+    {
+        global $xoopsUser;
+        $id = (int) $id;
+        if (empty($id)){
+            redirect_header($_SERVER['PHP_SELF'], 3, "無編號，無法寄送通知信");
+        }
+        /* 假如$signup已存在則用原來抓到的$signup,否則由get($id, true)來取得報名資料 */
+        /* $signup = $signup ? $signup : self::get($id, true); */
+        $signup = $signup ? $signup : self::get($id);
+        $action = Tony_signup_actions::get($signup['action_id']);
+
+        $now  = date("Y-m-d H:i:s");
+        $name = $xoopsUser->name();       /* 目前登入的人 */
+        $name = $name ? $name : $xoopsUser->uname(); /* 若沒有name則取uname */
+
+        $member_handler = xoops_getHandler('member');   /* 取得會員物件 */
+        $admUser = $member_handler->getUser($action['uid']);  /* 取得開發者 */
+        $adm_email = $admUser->email();         /* 取得開發者信箱 */
+
+        if ($type =='destroy'){
+           $title     = "「{$action['title']}」取消報名通知";
+           $head  =  "<p>您於 {$signup['signup_date']} 報名了「{$action['title']}」活動已於 {$now} 由 {$name} 取消報名。</p>";
+           $foot = "欲重新報名，請連至 " . XOOPS_URL . "/modules/tony_signup/index.php?op=tony_signup_data_create&action_id={$action['id']}";
+        } elseif ($type == 'store') {
+            $title = "「{$action['title']}」報名完成通知";
+            $head = "<p>您於 {$signup['signup_date']} 報名「{$action['title']}」活動已於 {$now} 由 {$name} 報名完成。</p>";
+            $foot = "完整詳情，請連至 " . XOOPS_URL . "/modules/tony_signup/index.php?op=tony_signup_data_show&id={$signup['id']}";
+        } elseif ($type == 'update') {
+            $title = "「{$action['title']}」修改報名資料通知";
+            $head = "<p>您於 {$signup['signup_date']} 報名「{$action['title']}」活動已於 {$now} 由 {$name} 修改報名資料如下：</p>";
+            $foot = "完整詳情，請連至 " . XOOPS_URL . "/modules/tony_signup/index.php?op=tony_signup_data_show&id={$signup['id']}";
+        } elseif ($type == 'accept') {
+            $title = "「{$action['title']}」報名錄取狀況通知";
+            if ($signup['accept'] == 1) {
+                $head = "<p>您於 {$signup['signup_date']} 報名「{$action['title']}」活動經審核，<h2 style='color:blue'>恭喜錄取！</h2>您的報名資料如下：</p>";
+            } else {
+                $head = "<p>您於 {$signup['signup_date']} 報名「{$action['title']}」活動經審核，很遺憾的通知您，因名額有限，<span style='color:red;'>您並未錄取。</span>您的報名資料如下：</p>";
+            }
+            $foot = "完整詳情，請連至 " . XOOPS_URL . "/modules/tony_signup/index.php?id={$signup['action_id']}";
+             /* 取得報名者的資料 */
+            $signupUser = $member_handler->getUser($signup['uid']);
+            $email = $signupUser->email();
+
+        }
+
+        $content = self::mk_content($id, $head, $foot, $action);
+
+        /* 假如沒有送出則秀出通知再轉向 */
+        if (!self::send($title, $content, $email)) {
+           redirect_header($_SERVER['PHP_SELF'], 3, "通知信寄發失敗！");
+        }
+
+        self::send($title, $content, $adm_email); /* 另寄通知給管理員 */
+    }
+
+    // 產生通知信內容
+    public static function mk_content($id, $head = '', $foot = '', $action = [])
+    {
+        if ($id) {
+            $TadDataCenter = new TadDataCenter('tony_signup');
+            $TadDataCenter->set_col('id', $id);
+            $tdc = $TadDataCenter->getData();
+
+            $table = '<table class="table">';
+            foreach ($tdc as $title => $signup) {
+                $table .= "
+                <tr>
+                    <th>{$title}</th>
+                    <td>";
+                foreach ($signup as $i => $val) {
+                    $table .= "<div>{$val}</div>";
+                }
+
+                $table .= "</td>
+                </tr>";
+            }
+            $table .= '</table>';
+        }
+
+        $content = "
+        <html>
+            <head>
+                <style>
+                    .table{
+                        border:1px solid #000;
+                        border-collapse: collapse;
+                        margin:10px 0px;
+                    }
+
+                    .table th, .table td{
+                        border:1px solid #000;
+                        padding: 4px 10px;
+                    }
+
+                    .table th{
+                        background:#c1e7f4;
+                    }
+
+                    .well{
+                        border-radius: 10px;
+                        background: #fcfcfc;
+                        border: 2px solid #cfcfcf;
+                        padding:14px 16px;
+                        margin:10px 0px;
+                    }
+                </style>
+            </head>
+            <body>
+                $head
+                <h2>{$action['title']}</h2>
+                <div>活動日期：{$action['action_date']}</div>
+                <div class='well'>{$action['detail']}</div>
+                $table
+                $foot
+            </body>
+        </html>
+        ";
+        return $content;
     }
 
 }
