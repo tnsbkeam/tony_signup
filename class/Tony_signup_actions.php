@@ -10,7 +10,10 @@ use XoopsModules\Tadtools\My97DatePicker;
 use XoopsModules\Tadtools\SweetAlert;
 use XoopsModules\Tony_signup\Tony_signup_data;
 use XoopsModules\Tadtools\BootstrapTable;
+<<<<<<< HEAD
 use XoopsModules\Tadtools\CkEditor;
+=======
+>>>>>>> 5e44e78d25d08b3d998f5b82822c7b20e93c69bf
 
 class Tony_signup_actions
 {
@@ -141,9 +144,14 @@ class Tony_signup_actions
 
         BootstrapTable::render();
 
+<<<<<<< HEAD
         $now_uid = $xoopsUser ? $xoopsUser->uid() : 0;
         $xoopsTpl->assign('now_uid', $now_uid);
 
+=======
+        $uid = $xoopsUser ? $xoopsUser->uid() : 0;
+        $xoopsTpl->assign('uid', $uid);
+>>>>>>> 5e44e78d25d08b3d998f5b82822c7b20e93c69bf
     }
 
     //更新某一筆資料
@@ -215,7 +223,11 @@ class Tony_signup_actions
         $data = $xoopsDB->fetchArray($result);
         if ($filter) {
             $myts = \MyTextSanitizer::getInstance();
+<<<<<<< HEAD
             $data['detail'] = $myts->displayTarea($data['detail'], 1, 0, 0, 0, 0);
+=======
+            $data['detail'] = $myts->displayTarea($data['detail'], 0, 1, 0, 1, 1);
+>>>>>>> 5e44e78d25d08b3d998f5b82822c7b20e93c69bf
             $data['title'] = $myts->htmlSpecialChars($data['title']);
         }
         return $data;
@@ -247,6 +259,8 @@ class Tony_signup_actions
 
             $data['signup'] = Tony_signup_data::get_all($data['id']);
 
+            $data['signup'] = Tony_signup_data::get_all($data['id']);
+
             if ($_SESSION['api_mode'] or $auto_key) {
                 $data_arr[] = $data;
             } else {
@@ -260,15 +274,22 @@ class Tony_signup_actions
    public static function copy($id)
    {
        global $xoopsDB , $xoopsUser;
+<<<<<<< HEAD
        if (!$_SESSION['can_add']) {
+=======
+       if (!$_SESSION['tony_signup_adm']) {
+>>>>>>> 5e44e78d25d08b3d998f5b82822c7b20e93c69bf
         redirect_header($_SERVER['PHP_SELF']."?id=$id", 3, "非管理員，無法執行此動作");
        }
       /*  ⑷ 加入擷取下列資料的新信息 */
        $action = self::get($id);   /* 抓取要複製的活動資料 */
        $uid = $xoopsUser->uid();       /* 抓目前的管理員 */
+<<<<<<< HEAD
 
        $uid = $uid ? $xoopsUser->uid() : '0';   /* 若沒有name則取uname */
 
+=======
+>>>>>>> 5e44e78d25d08b3d998f5b82822c7b20e93c69bf
        $end_date = date('Y-m-d 17:30:00', strtotime('+2 weeks'));      /* 變更截止日期 */
        $action_date = date('Y-m-d 09:00:00', strtotime('+16 days'));   /* 變更活動日期  */
 

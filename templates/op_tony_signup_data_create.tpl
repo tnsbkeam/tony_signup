@@ -35,8 +35,14 @@
         </button>
     </div>
 </form>
+<<<<<<< HEAD
 <{if $smarty.session.can_add}>
     <div class="bar">
         <a href="<{$xoops_url}>/modules/tony_signup/index.php?op=tony_signup_actions_edit&id=<{$action.id}>" class="btn btn-warning"><i class="fa fa-pencil" aria-hidden="true"></i> 編輯活動</a>
+=======
+<{if $smarty.session.tony_signup_adm}>
+    <div class="bar">
+        <a href="index.php?op=tony_signup_actions_edit&id=<{$action.id}>" class="btn btn-warning"><i class="fa fa-pencil" aria-hidden="true"></i> 編輯活動</a>
+>>>>>>> 5e44e78d25d08b3d998f5b82822c7b20e93c69bf
     </div>
 <{/if}>

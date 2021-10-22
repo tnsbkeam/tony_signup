@@ -59,9 +59,15 @@ switch ($op) {
     //新增報名資料之儲存
     case 'tony_signup_data_store':
         $id = Tony_signup_data::store();
+<<<<<<< HEAD
         Tony_signup_data::mail($id, 'store');
         redirect_header("{$_SERVER['PHP_SELF']}?op=tony_signup_data_show&id=$id", 3, "成功報名活動！");
         exit;
+=======
+        // header("location: {$_SERVER['PHP_SELF']}?op=tony_signup_data_show&id=$id");
+        redirect_header("{$_SERVER['PHP_SELF']}?op=tony_signup_data_show&id=$id", 3, "成功報名活動！");
+        break;
+>>>>>>> 5e44e78d25d08b3d998f5b82822c7b20e93c69bf
 
     //顯示報名表單
     case 'tony_signup_data_show':
@@ -77,6 +83,7 @@ switch ($op) {
      //更新報名資料
     case 'tony_signup_data_update':
         Tony_signup_data::update($id);
+<<<<<<< HEAD
         Tony_signup_data::mail($id, 'update');
         redirect_header($_SERVER['PHP_SELF'] . "?op=tony_signup_data_show&id=$id", 3, "成功修改報名資料！");
         exit;
@@ -88,15 +95,34 @@ switch ($op) {
         Tony_signup_data::mail($id, 'destroy', $signup);
         redirect_header($_SERVER['PHP_SELF'] . "?id=$action_id", 3, "成功刪除報名資料！");
         exit;
+=======
+        // header("location: {$_SERVER['PHP_SELF']}?op=tad_signup_data_show&id=$id");
+        redirect_header($_SERVER['PHP_SELF'] . "?op=tony_signup_data_show&id=$id", 3, "成功修改報名資料！");
+        exit;
+
+    //刪除報名資料
+    case 'tony_signup_data_destroy':
+        Tony_signup_data::destroy($id);
+        // redirect_header($_SERVER['PHP_SELF']?id=$action_id");
+        redirect_header($_SERVER['PHP_SELF'] . "?id=$action_id", 3, "成功刪除報名資料！");
+     exit;
+>>>>>>> 5e44e78d25d08b3d998f5b82822c7b20e93c69bf
 
     //更改錄取狀態
     case 'tony_signup_data_accept':
         Tony_signup_data::accept($id, $accept);
+<<<<<<< HEAD
         Tony_signup_data::mail($id, 'accept');
         redirect_header($_SERVER['PHP_SELF'] . "?id=$action_id", 3, "成功設定錄取狀態！");
         exit;
 
     // 複製活動
+=======
+        redirect_header($_SERVER['PHP_SELF'] . "?id=$action_id", 3, "成功設定錄取狀態！");
+        exit;
+
+        // 複製活動
+>>>>>>> 5e44e78d25d08b3d998f5b82822c7b20e93c69bf
     case 'tony_signup_actions_copy':
         $new_id = Tony_signup_actions::copy($id);
         header("location: {$_SERVER['PHP_SELF']}?op=tony_signup_actions_edit&id=$new_id");
