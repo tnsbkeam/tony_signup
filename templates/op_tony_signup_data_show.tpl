@@ -33,9 +33,22 @@
     <{/foreach}>
 </table>
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 3441e70fc10f6bead2f495bf7ee81548f7a086ef
 <{if $smarty.session.can_add || $uid==$now_uid}>
     <div class="bar">
         <a href="javascript:del_data('<{$id}>')" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i> 取消報名  </a>
         <a href="<{$xoops_url}>/modules/tony_signup/index.php?op=tony_signup_data_edit&action_id=<{$action_id}>&id=<{$id}>" class="btn btn-warning"> <i class="fa fa-pencil" aria-hidden="true"></i> 修改報名資料 </a>
+<<<<<<< HEAD
+=======
+=======
+<{if $smarty.session.tony_signup_adm || $uid==$now_uid}>
+    <div class="bar">
+        <a href="javascript:del_data('<{$id}>')" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i> 取消報名  </a>
+        <a href="index.php?op=tony_signup_data_edit&action_id=<{$action_id}>&id=<{$id}>" class="btn btn-warning"> <i class="fa fa-pencil" aria-hidden="true"></i> 修改報名資料 </a>
+>>>>>>> 5e44e78d25d08b3d998f5b82822c7b20e93c69bf
+>>>>>>> 3441e70fc10f6bead2f495bf7ee81548f7a086ef
     </div>
 <{/if}>

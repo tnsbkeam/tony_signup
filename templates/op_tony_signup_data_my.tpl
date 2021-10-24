@@ -12,7 +12,15 @@
         <{foreach from=$my_signup item=signup_data}>
             <tr>
                 <td>
+<<<<<<< HEAD
                     <a href="<{$xoops_url}>/modules/tony_signup/index.php?id=<{$signup_data.action_id}>">
+=======
+<<<<<<< HEAD
+                    <a href="<{$xoops_url}>/modules/tony_signup/index.php?id=<{$signup_data.action_id}>">
+=======
+                    <a href="index.php?id=<{$signup_data.action_id}>">
+>>>>>>> 5e44e78d25d08b3d998f5b82822c7b20e93c69bf
+>>>>>>> 3441e70fc10f6bead2f495bf7ee81548f7a086ef
                         <{$signup_data.action.title}>
                     </a>
                 </td>

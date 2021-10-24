@@ -28,8 +28,18 @@ class Tony_signup_data
     {
         global $xoopsTpl, $xoopsUser;
 
+<<<<<<< HEAD
         $uid = $xoopsUser ? $xoopsUser->uid() : 0;
              //抓取預設值
+=======
+<<<<<<< HEAD
+        $uid = $xoopsUser ? $xoopsUser->uid() : 0;
+             //抓取預設值
+=======
+        $uid = $_SESSION['tony_signup_adm'] ? null : $xoopsUsers->uid();
+        //抓取預設值
+>>>>>>> 5e44e78d25d08b3d998f5b82822c7b20e93c69bf
+>>>>>>> 3441e70fc10f6bead2f495bf7ee81548f7a086ef
         $db_values = empty($id) ? [] : self::get($id, $uid);
 
         foreach ($db_values as $col_name => $col_val) {
@@ -54,9 +64,19 @@ class Tony_signup_data
 
         if (time() > strtotime($action['end_date'])) {
             redirect_header($_SERVER['PHP_SELF'], 3, "以報名截止，無法再進行報名或修改報名");
+<<<<<<< HEAD
         }elseif (!$action['enable']) {
             redirect_header($_SERVER['PHP_SELF'], 3, "該報名已關閉，無法再進行報名或修改報名");
         }elseif (count($action['signup']) >= $action['number']) {
+=======
+<<<<<<< HEAD
+        }elseif (!$action['enable']) {
+            redirect_header($_SERVER['PHP_SELF'], 3, "該報名已關閉，無法再進行報名或修改報名");
+        }elseif (count($action['signup']) >= $action['number']) {
+=======
+        } elseif (count($action['signup']) >= $action['number']) {
+>>>>>>> 5e44e78d25d08b3d998f5b82822c7b20e93c69bf
+>>>>>>> 3441e70fc10f6bead2f495bf7ee81548f7a086ef
             redirect_header($_SERVER['PHP_SELF'], 3, "報名人數已滿，無法再進行報名");
         }
 
@@ -121,7 +141,15 @@ class Tony_signup_data
             return;
         }
 
+<<<<<<< HEAD
         $uid = $_SESSION['can_add']? null : $xoopsUser->uid();
+=======
+<<<<<<< HEAD
+        $uid = $_SESSION['can_add']? null : $xoopsUser->uid();
+=======
+        $uid = $_SESSION['tony_signup_adm']? null : $xoopsUser->uid();
+>>>>>>> 5e44e78d25d08b3d998f5b82822c7b20e93c69bf
+>>>>>>> 3441e70fc10f6bead2f495bf7ee81548f7a086ef
 
         $id = (int) $id;
         $data = self::get($id , $uid);
@@ -237,7 +265,15 @@ class Tony_signup_data
             $sql = "select * from `" . $xoopsDB->prefix("tony_signup_data") . "` where `action_id`='$action_id' order by `signup_date`";
         } else {
             /* 假如使用者不是管理員而且不指定要擷取那個uid的資料 */
+<<<<<<< HEAD
             if (!$_SESSION['can_add'] or !$uid) {
+=======
+<<<<<<< HEAD
+            if (!$_SESSION['can_add'] or !$uid) {
+=======
+            if (!$_SESSION['tony_signup_adm'] or !$uid) {
+>>>>>>> 5e44e78d25d08b3d998f5b82822c7b20e93c69bf
+>>>>>>> 3441e70fc10f6bead2f495bf7ee81548f7a086ef
                 $uid = $xoopsUser ? $xoopsUser->uid() : 0;
             }
             $sql = "select * from `" . $xoopsDB->prefix("tony_signup_data") . "` where `uid`='$uid' order by `signup_date`";
@@ -274,7 +310,15 @@ class Tony_signup_data
      {
         global $xoopsDB;
 
+<<<<<<< HEAD
         if (!$_SESSION['can_add']) {
+=======
+<<<<<<< HEAD
+        if (!$_SESSION['can_add']) {
+=======
+        if (!$_SESSION['tony_signup_adm']) {
+>>>>>>> 5e44e78d25d08b3d998f5b82822c7b20e93c69bf
+>>>>>>> 3441e70fc10f6bead2f495bf7ee81548f7a086ef
             redirect_header($_SERVER['PHP_SELF'], 3, "您沒有權限使用此功能");
         }
         /*  再次數字化  */
@@ -286,6 +330,10 @@ class Tony_signup_data
         $xoopsDB->queryF($sql) or Utility::web_error($sql, __FILE__, __LINE__);
      }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 3441e70fc10f6bead2f495bf7ee81548f7a086ef
      //立即寄出
      public static function send($title = "無標題", $content = "無內容", $email = "")
      {
@@ -422,4 +470,9 @@ class Tony_signup_data
         return $content;
     }
 
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 5e44e78d25d08b3d998f5b82822c7b20e93c69bf
+>>>>>>> 3441e70fc10f6bead2f495bf7ee81548f7a086ef
 }
